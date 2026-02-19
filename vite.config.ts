@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
 
   return {
-    base: '/ltl-test-monitor/',   // ⭐ IMPORTANT FIX
+    base: '/',   // ⭐ IMPORTANT FIX
 
     server: {
       port: 3000,
