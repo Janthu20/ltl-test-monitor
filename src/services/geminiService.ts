@@ -2,8 +2,7 @@
 import { GoogleGenAI } from "@google/genai";
 
 // Always use process.env.API_KEY directly when initializing the client.
-const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY
- });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const getSystemInsights = async (systemSummary: string): Promise<string> => {
   try {

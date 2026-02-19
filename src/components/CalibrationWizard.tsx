@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { TankConfig } from '../types';
+import { TankConfig } from '../../types';
 
 interface CalibrationWizardProps {
   tankId: number;

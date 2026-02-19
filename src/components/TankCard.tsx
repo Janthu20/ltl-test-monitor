@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TankData } from '../types';
+import { TankData } from '../../types';
 
 interface TankCardProps {
   id: string;

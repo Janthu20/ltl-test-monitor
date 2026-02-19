@@ -1,25 +1,18 @@
-import path from 'path'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, '.', '')
+const repoName = 'ltl-test-monitor'
 
-  const isGithub = process.env.GITHUB_ACTIONS === 'true'
+export default defineConfig({
+  plugins: [react()],
 
-  return {
-    base: isGithub ? '/ltl-test-monitor/' : '/',
+  // ✅ correct path for GitHub Pages
+  base: process.env.GITHUB_ACTIONS
+    ? `/${repoName}/`
+    : '/',
 
-    plugins: [react()],
-
-    define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY),
-    },
-
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-      },
-    },
-  }
+  server: {
+    port: 3000,
+    host: true,
+  },
 })
