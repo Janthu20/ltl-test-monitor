@@ -11,13 +11,7 @@ const calculateVolumeAndPerc = (raw: number, config: any) => {
   if (!config?.isConfigured) return { vol: 0, perc: 0 };
   
   let h;
-  if (raw <= config.p2_raw) {
-    h = config.p1_h + ((raw - config.p1_raw) * (config.p2_h - config.p1_h)) / (config.p2_raw - config.p1_raw || 1);
-  } else {
-    h = config.p2_h + ((raw - config.p2_raw) * (config.p3_h - config.p2_h)) / (config.p3_raw - config.p2_raw || 1);
-  }
-  
-  h = Math.max(0, Math.min(h, config.max_height));
+  h = config.max_height * raw / 4095;
   const rawVol = (Math.PI * Math.pow(config.diameter / 2, 2) * h) / 1000000;
   const vol = rawVol < 5 ? 0 : Math.round(rawVol / 5) * 5;
   const perc = (h / config.max_height) * 100;
