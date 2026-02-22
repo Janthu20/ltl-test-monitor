@@ -94,6 +94,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onBack, canManage }) =>
       setNewPassword('');
       setNewRole('viewer');
       
+      // Clean up secondary auth session if necessary
       await secondaryAuth.signOut();
     } catch (err: any) {
       console.error(err);

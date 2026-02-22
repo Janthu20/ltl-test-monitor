@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View } from '../../types';
+import { View } from '../types';
 import { Icons, COLORS } from '../constants';
 
 interface LayoutProps {

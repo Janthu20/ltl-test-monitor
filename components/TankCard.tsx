@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TankData } from '../../types';
+import { TankData } from '../types';
 
 interface TankCardProps {
   id: string;
@@ -10,11 +10,28 @@ interface TankCardProps {
 const calculateVolumeAndPerc = (raw: number, config: any) => {
   if (!config?.isConfigured) return { vol: 0, perc: 0 };
   
-  let h;
-  h = config.max_height * raw / 4095;
+  // Linear Regression (y = mx + c) using 3 calibration points
+  const x = [config.p1_raw, config.p2_raw, config.p3_raw];
+  const y = [config.p1_h, config.p2_h, config.p3_h];
+  const n = 3;
+  
+  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+  for (let i = 0; i < n; i++) {
+    sumX += x[i];
+    sumY += y[i];
+    sumXY += x[i] * y[i];
+    sumX2 += x[i] * x[i];
+  }
+  
+  const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX || 1);
+  const c = (sumY - m * sumX) / n;
+  
+  let h = m * raw + c;
+  h = Math.max(0, Math.min(h, config.max_height));
+  
   const rawVol = (Math.PI * Math.pow(config.diameter / 2, 2) * h) / 1000000;
   const vol = rawVol < 5 ? 0 : Math.round(rawVol / 5) * 5;
-  const perc = (h / config.max_height) * 100;
+  const perc = Math.min(100, (h / config.max_height) * 100);
   
   return { vol, perc };
 };

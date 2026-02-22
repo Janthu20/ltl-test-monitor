@@ -1,7 +1,7 @@
 
 import React, { useMemo } from 'react';
 import TankCard from './TankCard';
-import { TankData } from '../../types';
+import { TankData } from '../types';
 
 interface DashboardProps {
   tanks: Record<string, TankData>;
@@ -17,8 +17,26 @@ const Dashboard: React.FC<DashboardProps> = ({ tanks }) => {
       if (t.config && t.config.isConfigured) {
         const raw = t.analog_raw;
         const config = t.config;
-        let h;
-        h = config.max_height * raw / 4095;
+        
+        // Linear Regression (y = mx + c) using 3 calibration points
+        const x = [config.p1_raw, config.p2_raw, config.p3_raw];
+        const y = [config.p1_h, config.p2_h, config.p3_h];
+        const n = 3;
+        
+        let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+        for (let i = 0; i < n; i++) {
+          sumX += x[i];
+          sumY += y[i];
+          sumXY += x[i] * y[i];
+          sumX2 += x[i] * x[i];
+        }
+        
+        const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX || 1);
+        const c = (sumY - m * sumX) / n;
+        
+        let h = m * raw + c;
+        h = Math.max(0, Math.min(h, config.max_height));
+
         const v = (Math.PI * Math.pow(config.diameter / 2, 2) * h) / 1000000;
         const roundedV = Math.max(0, Math.round(v / 5) * 5);
         
@@ -29,7 +47,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tanks }) => {
 
     return {
       total: Math.round(totalV / 5) * 5,
-      avg: totalMaxV > 0 ? (totalV / totalMaxV) * 100 : 0
+      avg: totalMaxV > 0 ? Math.min(100, (totalV / totalMaxV) * 100) : 0
     };
   }, [tanks]);
 

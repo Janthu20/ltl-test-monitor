@@ -4,7 +4,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, onValue, set, get, off } from 'firebase/database';
 import { FIREBASE_CONFIG } from './constants';
-import { View, AppState, TankConfig } from '../types';
+import { View, AppState, TankConfig } from './types';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import CalibrationWizard from './components/CalibrationWizard';
