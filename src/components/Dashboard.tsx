@@ -18,7 +18,12 @@ const Dashboard: React.FC<DashboardProps> = ({ tanks }) => {
         const raw = t.analog_raw;
         const config = t.config;
         let h;
-        h = config.max_height * raw / 4095;
+        if (raw <= config.p2_raw) {
+          h = config.p1_h + ((raw - config.p1_raw) * (config.p2_h - config.p1_h)) / (config.p2_raw - config.p1_raw || 1);
+        } else {
+          h = config.p2_h + ((raw - config.p2_raw) * (config.p3_h - config.p2_h)) / (config.p3_raw - config.p2_raw || 1);
+        }
+        h = Math.max(0, Math.min(h, config.max_height));
         const v = (Math.PI * Math.pow(config.diameter / 2, 2) * h) / 1000000;
         const roundedV = Math.max(0, Math.round(v / 5) * 5);
         
